@@ -3,11 +3,16 @@ name: Update VPN Configs
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 * * * *'   # every hour at minute 00 (UTC)
+    - cron: '0 */6 * * *'   # UTC每6小时运行一次
 
 jobs:
   update-configs:
     runs-on: ubuntu-latest
+    # ==========新增这一段env环境变量==========
+    env:
+      REQUEST_DELAY: "4"      # 每次检测请求间隔4秒，减少429限流；数字越大越慢
+      MAX_WORKERS: "2"        # 降低并发线程，不要同时大量检测节点
+    # ======================================
 
     steps:
       - name: Checkout repository
